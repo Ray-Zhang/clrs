@@ -10,6 +10,10 @@ void unittest(void) {
         insert(testHeap, i);
     }
     for (int i = 0; i < 10; i++) {
+        printf("%d ", (testHeap -> data)[i]);
+    }
+    printf("\n");
+    for (int i = 0; i < 10; i++) {
         assert((9 - i) == extractMax(testHeap));
     }
 

@@ -11,7 +11,7 @@ Output: 1->1->2->3->4->4->5->6
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "heap.h"
+#include "listnodeHeap.h"
 
 struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
     struct ListNode* retListNode = NULL;
@@ -59,14 +59,7 @@ struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
 
 
 // ------------------
-void listNodeInit(struct ListNode * listnode, int v, struct ListNode * n)
-{
-    listnode -> val = v;
-    listnode -> next = n;
-    return;
-}
-
-void showList(struct ListNode * head)
+static void showList(struct ListNode * head)
 {
     struct ListNode * currentNode = head;
     while (currentNode)
@@ -103,4 +96,3 @@ int main(void)
 
     exit(0);
 }
-

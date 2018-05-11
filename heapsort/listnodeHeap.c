@@ -1,10 +1,10 @@
-#include "heap.h"
+#include "listnodeHeap.h"
 #include <stdlib.h>
 
 void init(Heap * hp, int sz)
 {
     hp -> data = (struct ListNode**)malloc(sizeof(struct ListNode*) * sz);
-    hp -> size;
+    hp -> size = sz;
 
     return;
 }
