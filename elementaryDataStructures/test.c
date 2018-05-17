@@ -1,7 +1,9 @@
 #include "queue.h"
 #include "deque.h"
 #include "linkedlist.h"
+#include "mergeableHeap.h"
 #include <assert.h>
+#include <stdio.h>
 
 void unittest(void) {
     // queue test starts
@@ -32,6 +34,7 @@ void unittest(void) {
     delDeque(testDeq);
     // deq test ends
 
+    // allocate/free test starts
     FreeList * testFl = createFreeList(3);
     assert(testFl -> free == 0);
     allocateObject(testFl);
@@ -41,6 +44,26 @@ void unittest(void) {
     freeObject(testFl, 1);
     assert(testFl -> free == 1);
     deleteFreeList(testFl);
+    // allocate/free test ends
+
+    // mergeable heap test starts
+    Node * mha = makeHeap();
+    insert(mha, 2);
+    insert(mha, 3);
+    insert(mha, 1);
+    assert(minimum(mha) == 1);
+    assert(extractMinimum(mha) == 1);
+    Node * mhb = makeHeap();
+    insert(mhb, 4);
+    insert(mhb, 5);
+    insert(mhb, 6);
+    assert(extractMinimum(mhb) == 4);
+    Node * mhc = unionHeap(mha, mhb);
+    assert(extractMinimum(mhc) == 2);
+    assert(extractMinimum(mhc) == 3);
+    assert(extractMinimum(mhc) == 5);
+    assert(extractMinimum(mhc) == 6);
+    // mergeable heap test ends
 
     return;
 }
