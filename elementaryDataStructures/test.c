@@ -1,5 +1,6 @@
 #include "queue.h"
 #include "deque.h"
+#include "linkedlist.h"
 #include <assert.h>
 
 void unittest(void) {
@@ -29,6 +30,17 @@ void unittest(void) {
     assert(dequeueRight(testDeq) == 2);
     assert(dequeueRight(testDeq) == 1);
     delDeque(testDeq);
+    // deq test ends
+
+    FreeList * testFl = createFreeList(3);
+    assert(testFl -> free == 0);
+    allocateObject(testFl);
+    allocateObject(testFl);
+    assert(testFl -> free == 2);
+    freeObject(testFl, 0);
+    freeObject(testFl, 1);
+    assert(testFl -> free == 1);
+    deleteFreeList(testFl);
 
     return;
 }
