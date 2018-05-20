@@ -61,24 +61,77 @@ void inorderWalkNonrecursive(Node * root) {
     Node * current = root;
     Node * backFrom = NULL;
     while (current) {
-        // go left
-        if (current -> left_c && backFrom != current -> left_c) {
+        // go left, prints nothing, don't set backFrom
+        if (current -> left_c && backFrom != current -> left_c
+                && backFrom != current -> right_c) {
             current = current -> left_c;
         }
-        // go right
+        // go right, prints out current key, don't set backFrom
         else if (current -> right_c && backFrom != current -> right_c) {
-            printf("%d\n");
+            printf("%d\n", current -> key);
             current = current -> right_c;
         }
-        // go up
-        else if () {
-            // when go up, print out if it's the right child of its parent
-            if (current == current -> p -> righ_c)
-                printf("%d\n");
+        // go up, may print out current key, set backFrom to current
+        else {
+            // when go up, print out if it's coming from it's left child (no right child)
+            // or it has no child at all
+            if (backFrom == current -> left_c || (!current -> left_c && !current -> right_c))
+                printf("%d\n", current -> key);
             backFrom = current;
             current = current -> p;
         }
     }
 
     return;
+}
+
+Node * searchBST(Node * root, int key) {
+    Node * current = root;
+    while (current && current -> key != key) {
+        if (key < current -> key)
+            current = current -> left_c;
+        else
+            current = current -> right_c;
+    }
+    return current;
+}
+
+Node * minimumBST(Node * root) {
+    if (!root)
+        exit(1);
+    Node * x = root;
+    while (x -> left_c)
+        x = x -> left_c;
+    return x;
+}
+
+Node * maximumBST(Node * root) {
+    if (!root)
+        exit(1);
+    Node * x = root;
+    while (x -> right_c)
+        x = x -> right_c;
+    return x;
+}
+
+Node * successor(Node * x) {
+    if (x -> right_c)
+        return minimumBST(x -> right_c);
+    Node * y = x -> p;
+    while (y != NULL && x == y -> right_c) {
+        x = y;
+        y = y -> p;
+    }
+    return y;
+}
+
+Node * predecessor(Node * x) {
+    if (x -> left_c)
+        return maximumBST(x -> left_c);
+    Node * y = x -> p;
+    while (y != NULL && x == y -> left_c) {
+        x = y;
+        y = y -> p;
+    }
+    return y;
 }

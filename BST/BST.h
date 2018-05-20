@@ -10,3 +10,13 @@ void insertBST(Node ** root, int key);
 void inorderWalk(Node * root);
 
 void inorderWalkNonrecursive(Node * root);
+
+Node * searchBST(Node * root, int key);
+
+Node * minimumBST(Node * root);
+
+Node * maximumBST(Node * root);
+
+Node * successor(Node * x);
+
+Node * predecessor(Node * x);
