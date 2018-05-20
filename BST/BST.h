@@ -20,3 +20,5 @@ Node * maximumBST(Node * root);
 Node * successor(Node * x);
 
 Node * predecessor(Node * x);
+
+void deleteNodeBST(Node * root, int key);

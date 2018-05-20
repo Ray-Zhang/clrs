@@ -5,6 +5,19 @@
 #define LEFT 0
 #define RIGHT 1
 
+static void transplant(Node ** root, Node * u, Node * v) {
+    if (!u -> p)
+        *root = v;
+    else if (u == u -> p -> left_c)
+        u -> p -> left_c = v;
+    else
+        u -> p -> right_c = v;
+    if (v)
+        v -> p = u -> p;
+
+    return;
+}
+
 static Node * makeNode(Node * parent, int key) {
     Node * newNode = (Node *) malloc(sizeof(Node));
     if (!newNode)
@@ -134,4 +147,27 @@ Node * predecessor(Node * x) {
         y = y -> p;
     }
     return y;
+}
+
+void deleteNodeBST(Node * root, int key) {
+    Node * z = searchBST(root, key);
+    if (!z)
+        return;
+    if (!(z -> left_c))
+        transplant(&root, z, z -> right_c);
+    else if (!(z -> right_c))
+        transplant(&root, z, z -> left_c);
+    else {
+        Node * y = minimumBST(z -> right_c);
+        if (y -> p != z) {
+            transplant(&root, y, y -> right_c);
+            y -> right_c = z -> right_c;
+            y -> right_c -> p = y;
+        }
+        transplant(&root, z, y);
+        y -> left_c = z -> left_c;
+        y -> left_c -> p = y;
+    }
+
+    return;
 }

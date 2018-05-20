@@ -19,6 +19,10 @@ void unittest(void) {
     assert(maximumBST(bstRoot) -> key == 9);
     assert(successor(minimumBST(bstRoot)) -> key == 1);
     assert(predecessor(maximumBST(bstRoot)) -> key == 8);
+    deleteNodeBST(bstRoot, 7);
+    assert(searchBST(bstRoot, 9) -> key == 9);
+    assert(searchBST(bstRoot, 7) == NULL);
+    inorderWalkNonrecursive(bstRoot);
 }
 
 int main(void) {
