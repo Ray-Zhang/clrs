@@ -14,7 +14,7 @@ static void showRBTree(RBTree * rbt, Node * subroot) {
 
 void unittest(void) {
     RBTree * rbt = makeRBTree();
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 5; i++) {
         Node * newnode = (Node *) malloc(sizeof(Node));
         newnode -> key = i;
         newnode -> parent = rbt -> nil;
@@ -23,8 +23,12 @@ void unittest(void) {
         rbInsert(rbt, newnode);
     }
     showRBTree(rbt, rbt -> root);
+    rbDelete(rbt, rbt -> root -> left);
+    showRBTree(rbt, rbt -> root);
 }
 
 int main(void) {
     unittest();
+
+    exit(0);
 }

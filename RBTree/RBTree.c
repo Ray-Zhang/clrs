@@ -7,6 +7,7 @@ static void leftRotate(RBTree * rbt, Node * x) {
     x -> right = y -> left;
     if (y -> left != rbt -> nil)
         y -> left -> parent = x;
+    y -> parent = x -> parent;
     if (x -> parent == rbt -> nil)
         rbt -> root = y;
     else if (x == x -> parent -> left)
@@ -90,7 +91,9 @@ static void rbTransplant(RBTree * rbt, Node * u, Node * v) {
     else {
         u -> parent -> right = v;
     }
-    v -> parent = u -> parent;
+    if (v != rbt -> nil) {
+        v -> parent = u -> parent;
+    }
 
     return;
 }
@@ -171,6 +174,7 @@ void rbInsert(RBTree * rbt, Node * z) {
             x = x -> right;
     }
     if (y == rbt -> nil) {
+        z -> color = BLACK;
         rbt -> root = z;
         return;    // if the tree is empty, create root and return
     }
@@ -192,13 +196,15 @@ RBTree * makeRBTree() {
     if (!newrbt)
         exit(1);
     newrbt -> nil = (Node *) malloc(sizeof(Node));
-    if (!newrbt -> nil)
+    if (newrbt -> nil)
     {
         newrbt -> nil -> color = BLACK;    // sentinel node is always BLACK
-        newrbt -> nil -> parent = NULL;
+        newrbt -> nil -> parent = newrbt -> nil;
         newrbt -> nil -> left = newrbt -> nil;
         newrbt -> nil -> right = newrbt -> nil;
     }
+    else
+        exit(1);
     newrbt -> root = newrbt -> nil;
     return newrbt;
 }
@@ -219,12 +225,13 @@ void rbDelete(RBTree * rbt, Node * z) {
         y = rbMinimum(rbt, z -> right);
         x = y -> right;
         y_orig_color = y -> color;
-        if (y -> parent == z)
+        if (y -> parent == z) {
             x -> parent = y;
+        }
         else {
-            rbTransplant(rbt, y, y -> right);
-            y -> right = z -> right;
-            y -> right -> parent = y;
+            //rbTransplant(rbt, y, y -> right);
+            //y -> right = z -> right;
+            //y -> right -> parent = y;
         }
         rbTransplant(rbt, z, y);
         y -> left = z -> left;
