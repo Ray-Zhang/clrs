@@ -1,5 +1,6 @@
 #include "RBTree.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 static void leftRotate(RBTree * rbt, Node * x) {
     Node * y = x -> right;
@@ -56,7 +57,7 @@ static void rbInsertFixup(RBTree * rbt, Node * z) {
             }
         }
         else {
-            Node * y = z -> parent -> parent -> right;
+            Node * y = z -> parent -> parent -> left;
             if (y -> color == RED) {
                 z -> parent -> color = BLACK;
                 y -> color = BLACK;
@@ -74,11 +75,10 @@ static void rbInsertFixup(RBTree * rbt, Node * z) {
             }
         }
     }
+    rbt -> root -> color = BLACK;
 
     return;
 }
-
-
 
 static void rbTransplant(RBTree * rbt, Node * u, Node * v) {
     if (u -> parent == rbt -> nil) {
@@ -95,6 +95,71 @@ static void rbTransplant(RBTree * rbt, Node * u, Node * v) {
     return;
 }
 
+static Node * rbMinimum(RBTree * rbt, Node * subroot) {
+    Node * current = subroot;
+    while (current -> left != rbt -> nil) {
+        current = current -> left;
+    }
+    return current;
+}
+
+static void rbDeleteFixup(RBTree * rbt, Node * x) {
+    while (x != rbt -> nil && x -> color == BLACK) {
+        if (x == x -> parent -> left) {
+            Node * w = x -> parent -> right;
+            if (w -> color == RED) {
+                w -> color = BLACK;
+                x -> parent -> color = RED;
+                leftRotate(rbt, x -> parent);
+                w = x -> parent -> right;
+            }
+            if (w -> left -> color == BLACK && w -> right -> color == BLACK) {
+                w -> color = RED;
+                x = x -> parent;
+            }
+            else {
+                if (w -> right -> color == BLACK) {
+                    w -> left -> color = BLACK;
+                    w -> color = RED;
+                    rightRotate(rbt, w);
+                    w = x -> parent -> right;
+                }
+                w -> color = x -> parent -> color;
+                x -> parent -> color = BLACK;
+                w -> right -> color = BLACK;
+                leftRotate(rbt, x -> parent);
+                x = rbt -> root;
+            }
+        }
+        else {
+            Node * w = x -> parent -> left;
+            if (w -> color == RED) {
+                w -> color = BLACK;
+                x -> parent -> color = RED;
+                rightRotate(rbt, x -> parent);
+                w = x -> parent -> left;
+            }
+            if (w -> left -> color == BLACK && w -> right -> color == BLACK) {
+                w -> color = RED;
+                x = x -> parent;
+            }
+            else {
+                if (w -> left -> color == BLACK) {
+                    w -> right -> color = BLACK;
+                    w -> color = RED;
+                    leftRotate(rbt, w);
+                    w = x -> parent -> left;
+                }
+                w -> color = x -> parent -> color;
+                x -> parent -> color = BLACK;
+                x -> left -> color = BLACK;
+                rightRotate(rbt, x -> parent);
+                x = rbt -> root;
+            }
+        }
+    }
+}
+
 void rbInsert(RBTree * rbt, Node * z) {
     Node * y = rbt -> nil;
     Node * x = rbt -> root;
@@ -104,6 +169,10 @@ void rbInsert(RBTree * rbt, Node * z) {
             x = x -> left;
         else
             x = x -> right;
+    }
+    if (y == rbt -> nil) {
+        rbt -> root = z;
+        return;    // if the tree is empty, create root and return
     }
     z -> parent = y;
     if (z -> key < y -> key)
@@ -122,15 +191,15 @@ RBTree * makeRBTree() {
     RBTree * newrbt = (RBTree *) malloc(sizeof(RBTree));
     if (!newrbt)
         exit(1);
-    newrbt -> root = NULL;
     newrbt -> nil = (Node *) malloc(sizeof(Node));
     if (!newrbt -> nil)
     {
         newrbt -> nil -> color = BLACK;    // sentinel node is always BLACK
         newrbt -> nil -> parent = NULL;
-        newrbt -> nil -> left = NULL;
-        newrbt -> nil -> right = NULL;
+        newrbt -> nil -> left = newrbt -> nil;
+        newrbt -> nil -> right = newrbt -> nil;
     }
+    newrbt -> root = newrbt -> nil;
     return newrbt;
 }
 
@@ -147,7 +216,7 @@ void rbDelete(RBTree * rbt, Node * z) {
         rbTransplant(rbt, z, z -> left);
     }
     else {
-        y = rbMinimum(z -> right);
+        y = rbMinimum(rbt, z -> right);
         x = y -> right;
         y_orig_color = y -> color;
         if (y -> parent == z)
